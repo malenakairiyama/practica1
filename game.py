@@ -2,16 +2,41 @@ import random
 # Lista de palabras posibles
 words = ["python", "programación", "computadora", "código", "desarrollo",
 "inteligencia"]
-# Elegir una palabra al azar
-secret_word = random.choice(words)
-# Número máximo de intentos permitidos
+
+
+def preparar_palabra(nivel):
+    
+    word = random.choice(words)
+    if nivel == 1:
+        word_displayed = "".join(letra if letra.lower() in "aeiou" else "_" for letra in word)
+    elif nivel == 2:
+        word_displayed = word[0] + "_" * (len(word) - 2) + word[-1]
+    elif nivel == 3:
+         word_displayed = "_" * len(word)
+    else:
+        raise ValueError("Nivel de dificultad no válido. Los niveles son 1 (Fácil), 2 (Media) o 3 (Difícil).")
+    return word, word_displayed
+
+
+#Solicita al usuario que elija el nivel de dificultad
+while True:
+    try:
+        nivel = int(input("Elige el nivel de dificultad (1 para Fácil, 2 para Media, 3 para Difícil): "))
+        secret_word, word_displayed = preparar_palabra(nivel)
+        break
+    except ValueError:
+        print("Error: Ingresa un número válido (1, 2 o 3) para elegir el nivel de dificultad.")
+
+
+
+#Número máximo de intentos permitidos
 max_fallos = 10
+
 # Lista para almacenar las letras adivinadas
 guessed_letters = []
+
 print("¡Bienvenido al juego de adivinanzas!")
 print("Estoy pensando en una palabra. ¿Puedes adivinar cuál es?")
-word_displayed = "_" * len(secret_word)
-# Mostrarla palabra parcialmente adivinada
 print(f"Palabra: {word_displayed}")
 
 fallos = 0 #contador
@@ -40,13 +65,14 @@ while fallos < max_fallos:
         
     # Mostrar la palabra parcialmente adivinada
     letters = []
-    for letter in secret_word:
-        if letter in guessed_letters:
-            letters.append(letter)
+    for letter, display_letter in zip(secret_word, word_displayed):
+        if letter.lower() in guessed_letters:
+            letters.append(letter.lower())
         else:
-            letters.append("_")
+            letters.append(display_letter) #display_letter de wor_display en este caso es un guion bajo
     word_displayed = "".join(letters)
     print(f"Palabra: {word_displayed}")
+    
 # Verificar si se ha adivinado la palabra completa
     if word_displayed == secret_word:
         print(f"¡Felicidades! Has adivinado la palabra secreta:{secret_word}")
